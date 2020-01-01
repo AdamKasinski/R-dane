@@ -1,6 +1,6 @@
 tab$"%Popr_uwagowe" -> uwaga
 data.frame(uwaga,ys) -> qwe
-t.test(qwe$uwaga[qwe$ys=="SAT"],qwe$uwaga[qwe$ys=="noSAT"]) # czas reakcji
+t.test(qwe$uwaga[qwe$ys=="SAT"],qwe$uwaga[qwe$ys=="noSAT"]) # %popr_uwagowe
                                                             #t = -1.2717, df = 46.478, p-value = 0.2098
                                                             #alternative hypothesis: true difference in means is not equal to 0
                                                             #95 percent confidence interval:
@@ -8,4 +8,13 @@ t.test(qwe$uwaga[qwe$ys=="SAT"],qwe$uwaga[qwe$ys=="noSAT"]) # czas reakcji
                                                             #sample estimates:
                                                             #mean of x mean of y 
                                                             # 14.01577  26.26487 
-
+tab$"%Popr_ruchowe" -> ruch
+data.frame(ruch,ys) -> dod
+t.test(dod$ruch[dod$ys=="SAT"],dod$ruch[dod$ys=="noSAT"]) #%popr_ruchowe
+                                                          #t = -1.7597, df = 44.898, p-value = 0.08527
+                                                          #alternative hypothesis: true difference in means is not equal to 0
+                                                          #95 percent confidence interval:
+                                                          # -38.50920   2.59703
+                                                          #sample estimates:
+                                                          #mean of x mean of y 
+                                                          # 13.60331  31.55939 
