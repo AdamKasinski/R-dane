@@ -1,0 +1,5 @@
+tab$"%Popr_uwagowe" -> uwaga
+data.frame(uwaga,ys) -> qwe
+tab$"%Popr_ruchowe" -> ruchowe
+qwe
+t.test(qwe$uwaga,qwe$ruchowe)         #
