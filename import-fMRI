@@ -1,0 +1,15 @@
+ogolne <- readMat('ogolnefMRI.mat')
+nr_os <- readMat('nr_osfMRI.mat')
+unlist(nr_os, use.names = F) -> y
+headers <- readMat('headersfMRI.mat')
+unlist(headers, use.names = F) -> x
+dan <- unlist(ogolne, use.names = F)
+dane <- matrix(dan,ncol=length(x), nrow = length(ys),byrow = T,dimnames = list(ys,x))
+ys <- y[c(43:84)]
+y
+length(ys)
+length(x)
+tab <- as.data.frame(dane)
+colnames(dane) <- x
+rownames(dane) <- ys
+tab
