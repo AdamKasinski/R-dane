@@ -1,44 +1,18 @@
-tab$"%Popr_uwagowe" -> uwaga
-data.frame(uwaga,ys) -> qwe
-t.test(qwe$uwaga[qwe$ys=="SAT"],qwe$uwaga[qwe$ys=="noSAT"]) # %popr_uwagowe
-                                                            #t = -1.2717, df = 46.478, p-value = 0.2098
-                                                            #alternative hypothesis: true difference in means is not equal to 0
-                                                            #95 percent confidence interval:
-                                                            #-31.63278   7.13459
-                                                            #sample estimates:
-                                                            #mean of x mean of y 
-                                                            # 14.01577  26.26487 
-tab$"%Popr_ruchowe" -> ruch
-data.frame(ruch,ys) -> dod
-t.test(dod$ruch[dod$ys=="SAT"],dod$ruch[dod$ys=="noSAT"]) #%popr_ruchowe
-                                                          #t = -1.7597, df = 44.898, p-value = 0.08527
-                                                          #alternative hypothesis: true difference in means is not equal to 0
-                                                          #95 percent confidence interval:
-                                                          # -38.50920   2.59703
-                                                          #sample estimates:
-                                                          #mean of x mean of y 
-                                                          # 13.60331  31.55939 
+# EEG-5
 
+# Poprawność w uwagowych
 
-tab$"RT_m_uwagowe" -> RTuw                               
-data.frame(RTuw,ys) -> RTu
-t.test(RTu$RTuw[RTu$ys=="SAT"],RTu$RTuw[RTu$ys=="noSAT"]) # RT_m_uwagowe
-                                                          #t = -1.2511, df = 46.938, p-value = 0.2171
-                                                          #alternative hypothesis: true difference in means is not equal to 0
-                                                          #95 percent confidence interval:
-                                                          # -32.940462   7.679635
-                                                          #sample estimates:
-                                                          #mean of x mean of y 
-                                                          # 15.74667  28.37709
+dane <- tab$ogolne.all.1
+data.frame(x) -> xs
+data.frame(dane, ys) -> qwe
+qwe$dane[qwe$ys=="SAT"] -> sat
+qwe$dane[qwe$ys=="noSAT"] -> nosat
+t.test(sat,nosat)
 
+# czas
 
-tab$"RT_m_ruchowe" -> RTruch
-data.frame(RTruch,ys) -> RTru
-t.test(RTru$RTruch[RTru$ys=="SAT"],RTru$RTruch[RTru$ys=="noSAT"])
-t = -1.3041, df = 47, p-value = 0.1985                    # RT_m_ruchowe
-                                                          #alternative hypothesis: true difference in means is not equal to 0
-                                                          #95 percent confidence interval:
-                                                          # -33.552421   7.160439
-                                                          #sample estimates:
-                                                          #mean of x mean of y 
-                                                          # 16.00438  29.20038 
+d2 <- tab$ogolne.all.9
+data.frame(d2, ys) -> qwe
+qwe$d2[qwe$ys=="SAT"] -> sat2
+qwe$d2[qwe$ys=="noSAT"] -> nosat2
+t.test(sat2,nosat2)
