@@ -1,5 +1,14 @@
-tab$"%Popr_uwagowe" -> uwaga
-data.frame(uwaga,ys) -> qwe
-tab$"%Popr_ruchowe" -> ruchowe
-qwe
-t.test(qwe$uwaga,qwe$ruchowe)         #
+
+d3 <- tab$ogolne.all.1
+d4 <- tab$ogolne.all.2
+
+options(scipen = 999)
+
+data.frame(d3,ys) -> eksp
+data.frame(d4,ys) -> kont
+t.test(d3,d4)
+plot(sat2,
+     ylab="",
+     type="l",
+     col="blue")
+lines(nosat2, col="red")
