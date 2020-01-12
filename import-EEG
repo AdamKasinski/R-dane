@@ -1,15 +1,9 @@
 R<- library(R.matlab)
-getwd()
 setwd('C:/Users/Adam/Desktop')
 ogolne <- readMat('ogolne.mat')
 nr_os <- readMat('nr_os.mat')
-unlist(nr_os, use.names = F) -> y
 headers <- readMat('headers.mat')
+unlist(nr_os, use.names = F) -> y
 unlist(headers, use.names = F) -> x
-dan <- unlist(ogolne, use.names = F)
-dane <- matrix(dan,ncol=length(x), nrow = length(ys),byrow = T,dimnames = list(ys,x))
-ys <- y[c(50:98)]
-tab <- as.data.frame(dane)
-colnames(dane) <- x
-rownames(dane) <- ys
-tab
+tab <- data.frame(ogolne)
+y[50:98] -> ys
