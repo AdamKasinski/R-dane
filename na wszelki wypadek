@@ -1,0 +1,185 @@
+#EEG import
+R<- library(R.matlab)
+setwd('C:/Users/Adam/Desktop')
+ogolne <- readMat('ogolne.mat')
+nr_os <- readMat('nr_os.mat')
+headers <- readMat('headers.mat')
+unlist(nr_os, use.names = F) -> y
+unlist(headers, use.names = F) -> x
+tab <- data.frame(ogolne)
+y[50:98] -> ys
+options(scipen = 999)
+tab
+
+# EEG-5
+
+# Poprawność w uwagowych
+
+dane <- tab$ogolne.all.1
+data.frame(x) -> xs
+data.frame(dane, ys) -> qwe
+qwe$dane[qwe$ys=="SAT"] -> sat
+qwe$dane[qwe$ys=="noSAT"] -> nosat
+t.test(sat,nosat)
+
+dn <- tab$ogolne.all.2
+data.frame(x) -> xs2
+data.frame(dn, ys) -> qwe2
+qwe2$dn[qwe2$ys=="SAT"] -> sat3
+qwe2$dn[qwe2$ys=="noSAT"] -> nosat3
+t.test(sat3,nosat3)
+
+# czas
+
+d2 <- tab$ogolne.all.9
+data.frame(d2, ys) -> qwe
+qwe$d2[qwe$ys=="SAT"] -> sat2
+qwe$d2[qwe$ys=="noSAT"] -> nosat2
+t.test(sat2,nosat2)
+
+
+
+# EEG-1
+d3 <- tab$ogolne.all.1
+d4 <- tab$ogolne.all.2
+data.frame(d3,ys) -> eksp
+data.frame(d4,ys) -> kont
+t.test(d3,d4)
+plot(sat2,
+     ylab="",
+     type="l",
+     col="blue")
+lines(nosat2, col="red")
+
+
+#EEG-2
+
+d5 <- tab$ogolne.all.35
+d6 <- tab$ogolne.all.36
+d7 <- tab$ogolne.all.37
+d8 <- tab$ogolne.all.38
+
+t.test(d5,d6)
+t.test(d5,d7)
+t.test(d5,d8)
+t.test(d6,d7)
+t.test(d6,d8)
+t.test(d7,d8)
+
+boxplot(d5,d8)
+
+
+# EEG 6
+dane <- tab$ogolne.all.1
+data.frame(x) -> xs
+data.frame(dane, ys) -> qwe
+qwe$dane[qwe$ys=="SAT"] -> sat
+qwe$dane[qwe$ys=="noSAT"] -> nosat
+t.test(sat,nosat)
+sat
+sat3
+boxplot(sat,sat3, names = c('sat','sat3'))
+boxplot(nosat, nosat3,names = c('nosat','nosat3'))
+nosat3
+dn <- tab$ogolne.all.2
+data.frame(x) -> xs2
+data.frame(dn, ys) -> qwe2
+qwe2$dn[qwe2$ys=="SAT"] -> sat3
+qwe2$dn[qwe2$ys=="noSAT"] -> nosat3
+t.test(sat3,nosat3)
+
+#fMRI import
+R<- library(R.matlab)
+setwd('C:/Users/Adam/Desktop')
+ogolnefMRI <- readMat('ogolnefMRI.mat')
+nr_osfMRI <- readMat('nr_osfMRI.mat')
+headersfMRI <- readMat('headersfMRI.mat')
+unlist(nr_osfMRI, use.names = F) -> yf
+unlist(headersfMRI, use.names = F) -> xf
+tabf <- data.frame(ogolnefMRI)
+yf[43:84] -> ysf
+options(scipen = 999)
+tabf
+
+# fMRI-5
+
+# Poprawność w uwagowych
+ysf
+danef <- tabf$ogolne.all.1
+data.frame(xf) -> xsf
+data.frame(danef, ysf) -> qwef
+qwef$danef[qwef$ysf=="SAT"] -> satf
+qwef$danef[qwef$ysf=="noSAT"] -> nosatf
+t.test(satf,nosatf)
+
+
+t.test(sat,satf)
+
+t.test(nosat,nosatf)
+
+dnf <- tabf$ogolne.all.2
+data.frame(xf) -> xs2
+data.frame(dnf, ysf) -> qwe2f
+qwe2f$dnf[qwe2f$ysf=="SAT"] -> sat3f
+qwe2f$dnf[qwe2f$ysf=="noSAT"] -> nosat3f
+t.test(sat3f,nosat3f)
+
+# czas
+
+d2f <- tabf$ogolne.all.9
+data.frame(d2f, ysf) -> qwef
+qwef$d2f[qwef$ysf=="SAT"] -> sat2f
+qwe$d2f[qwef$ysf=="noSAT"] -> nosat2f
+t.test(sat2f,nosat2f)
+
+t.test(sat2, sat2f)
+t.test(nosat2,nosat2f)
+
+# fMRI-1
+d3f <- tabf$ogolne.all.1
+d4f <- tabf$ogolne.all.2
+data.frame(d3f,ysf) -> ekspf
+data.frame(d4f,ysf) -> kontf
+t.test(d3f,d4f)
+plot(sat2f,
+     ylab="",
+     type="l",
+     col="blue")
+lines(nosat2f, col="red")
+
+
+#fMRI-2
+
+d5f <- tabf$ogolne.all.35
+d6f <- tabf$ogolne.all.36
+d7f <- tabf$ogolne.all.37
+d8f <- tabf$ogolne.all.38
+
+
+boxplot(d5f,d8f)
+
+
+t.test(d5f,d6f)
+t.test(d5f,d7f)
+t.test(d5f,d8f)
+t.test(d6f,d7f)
+t.test(d6f,d8f)
+t.test(d7f,d8f)
+
+
+# fMRI 6
+danef <- tabf$ogolne.all.1
+data.frame(xf) -> xsf
+data.frame(danef, ysf) -> qwef
+qwef$dane[qwef$ys=="SAT"] -> satf
+qwef$dane[qwef$ys=="noSAT"] -> nosatf
+t.test(satf,nosatf)
+boxplot(nosatf, nosat3f,names = c('nosat','nosat3'))
+boxplot(satf,sat3f, names = c('sat','sat3'))
+dnf <- tabf$ogolne.all.2
+data.frame(xf) -> xs2f
+data.frame(dnf, ysf) -> qwe2f
+qwe2f$dnf[qwe2f$ysf=="SAT"] -> sat3f
+qwe2f$dnf[qwe2f$ysf=="noSAT"] -> nosat3f
+
+#-------------
