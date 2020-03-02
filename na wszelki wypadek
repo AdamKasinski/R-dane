@@ -1,5 +1,23 @@
+
 #EEG import
 R<- library(R.matlab)
+install.packages("dplyr")
+install.packages("ggpubr")
+install.packages("moments")
+install.packages("MASS")
+install.packages("car")
+install.packages("devtools")
+devtools::install_github("cardiomoon/ggiraphExtra")
+library(car)
+library(moments)
+library(MASS)
+library(ggpubr)
+library(boot)
+library(rpart)
+library(ggPredict)
+library(ggiraph)
+library(ggiraphExtra)
+library(plyr)
 setwd('C:/Users/Adam/Desktop')
 ogolne <- readMat('ogolne.mat')
 nr_os <- readMat('nr_os.mat')
@@ -9,85 +27,6 @@ unlist(headers, use.names = F) -> x
 tab <- data.frame(ogolne)
 y[50:98] -> ys
 options(scipen = 999)
-tab
-
-# EEG-5
-
-# Poprawność w uwagowych
-
-dane <- tab$ogolne.all.1
-data.frame(x) -> xs
-data.frame(dane, ys) -> qwe
-qwe$dane[qwe$ys=="SAT"] -> sat
-qwe$dane[qwe$ys=="noSAT"] -> nosat
-t.test(sat,nosat)
-
-dn <- tab$ogolne.all.2
-data.frame(x) -> xs2
-data.frame(dn, ys) -> qwe2
-qwe2$dn[qwe2$ys=="SAT"] -> sat3
-qwe2$dn[qwe2$ys=="noSAT"] -> nosat3
-t.test(sat3,nosat3)
-
-# czas
-
-d2 <- tab$ogolne.all.9
-data.frame(d2, ys) -> qwe
-qwe$d2[qwe$ys=="SAT"] -> sat2
-qwe$d2[qwe$ys=="noSAT"] -> nosat2
-t.test(sat2,nosat2)
-
-
-
-# EEG-1
-d3 <- tab$ogolne.all.1
-d4 <- tab$ogolne.all.2
-data.frame(d3,ys) -> eksp
-data.frame(d4,ys) -> kont
-t.test(d3,d4)
-plot(sat2,
-     ylab="",
-     type="l",
-     col="blue")
-lines(nosat2, col="red")
-
-
-#EEG-2
-
-d5 <- tab$ogolne.all.35
-d6 <- tab$ogolne.all.36
-d7 <- tab$ogolne.all.37
-d8 <- tab$ogolne.all.38
-
-t.test(d5,d6)
-t.test(d5,d7)
-t.test(d5,d8)
-t.test(d6,d7)
-t.test(d6,d8)
-t.test(d7,d8)
-
-boxplot(d5,d8)
-
-
-# EEG 6
-dane <- tab$ogolne.all.1
-data.frame(x) -> xs
-data.frame(dane, ys) -> qwe
-qwe$dane[qwe$ys=="SAT"] -> sat
-qwe$dane[qwe$ys=="noSAT"] -> nosat
-t.test(sat,nosat)
-sat
-sat3
-boxplot(sat,sat3, names = c('sat','sat3'))
-boxplot(nosat, nosat3,names = c('nosat','nosat3'))
-nosat3
-dn <- tab$ogolne.all.2
-data.frame(x) -> xs2
-data.frame(dn, ys) -> qwe2
-qwe2$dn[qwe2$ys=="SAT"] -> sat3
-qwe2$dn[qwe2$ys=="noSAT"] -> nosat3
-t.test(sat3,nosat3)
-
 #fMRI import
 R<- library(R.matlab)
 setwd('C:/Users/Adam/Desktop')
@@ -99,81 +38,478 @@ unlist(headersfMRI, use.names = F) -> xf
 tabf <- data.frame(ogolnefMRI)
 yf[43:84] -> ysf
 options(scipen = 999)
-tabf
 
+tab
+
+#Tabela 3
+
+read.csv("KolejnośćEEG.csv", sep = ";") -> kolEEG #tabela do pkt.3 
+substring(kolEEG$Osoby.Badane,11) -> osobyEEG
+read.csv("KolejnośćfMRI.csv", sep = ";") -> kolfMRI
+y[0:49] -> osoby #tu trzeba poprawić
+substring(kolEEG$Osoby.Badane,11) -> osobyfMRI
+yf[0:42] -> kkr
+osobyfMRI
+kkr
+#EEG tab3
+kolEEG[,c( "pre.post.test", "kolejność")] -> tabela3
+tabela3$osobEEG <- osobyEEG
+tabela3
+length(dim(osobyEEG))
+imiona <- c()
+for(i in 1: length(osobyEEG)){
+        for(j in 1: length(osoby)){
+                if (osobyEEG[i] == osoby[j]){
+                        imiona[length(imiona)+1] <- osobyEEG[i]
+                }
+        }
+}
+for ( i in 1: length(tabela3)){
+        if(tabela3$osobEEG[i] %in% imiona){
+                next
+        }else{
+                tabelanew <-tabela3[-c(i),]
+                tabelanew -> tabela3
+                }
+        }
+}
+tabela3$pre.post.test[tabela3$osobEEG %in% imiona]
+data.frame(tabela3$osobEEG[tabela3$osobEEG %in% imiona],tabela3$pre.post.test[tabela3$osobEEG %in% osoby],tabela3$kolejność[tabela3$osobEEG %in% imiona]) -> tab4
+tab4$czas <- tab$ogolne.all.11
+tab4
+data.frame(tab4$tabela3.osobEEG.tabela3.osobEEG..in..imiona.[tab4$tabela3.kolejność.tabela3.osobEEG..in..imiona. == "EEG"],tab4$tabela3.kolejność.tabela3.osobEEG..in..imiona.[tab4$tabela3.kolejność.tabela3.osobEEG..in..imiona. == "EEG"],tab$ogolne.all.11[tab4$tabela3.osobEEG.tabela3.osobEEG..in..imiona.])
+tab$ogolne.all.11[tab4$tabela3.osobEEG.tabela3.osobEEG..in..imiona.[tab4$tabela3.pre.post.test.tabela3.osobEEG..in..osoby. != "pre-test-manual" |tab4$tabela3.pre.post.test.tabela3.osobEEG..in..osoby. != "post-test-manual" ]] -> dok
+wilcox.test(dok[tab4$tabela3.kolejność.tabela3.osobEEG..in..imiona. == "EEG"],dok[tab4$tabela3.kolejność.tabela3.osobEEG..in..imiona. == "fMRI"])
+dok[tab4$tabela3.kolejność.tabela3.osobEEG..in..imiona. == "EEG"] -> eeg3
+dok[tab4$tabela3.kolejność.tabela3.osobEEG..in..imiona. == "fMRI"] -> fmri3
+
+n1=length(eeg3)
+n2=length(fmri3)
+r=rank(c(eeg3,fmri3))
+U=sum(r[1:n1])-n1*(n1+1)/2
+U
+fmri3
+eeg3
+if (U<n1*n2/2) {p=pwilcox(U,n1,n2)*2} else {p=(1-pwilcox(U,n1,n2))*2}
+p
+wilcox.test(eeg3,fmri3)
+boxplot(eeg3,fmri3, names = c("pierwsze EEG","pierwszefMRI"), main = "porównanie czasu odpowiedzi w próbach kontrolnych")
+#dla fMRI
+
+tabela3$pre.post.test[tabela3$osobEEG %in% imiona]
+data.frame(tabela3$osobEEG[tabela3$osobEEG %in% imiona],tabela3$pre.post.test[tabela3$osobEEG %in% osoby],tabela3$kolejność[tabela3$osobEEG %in% imiona]) -> tab4
+tab4$czas <- tabf$ogolne.all.11
+tab4
+data.frame(tab4$tabela3.osobEEG.tabela3.osobEEG..in..imiona.[tab4$tabela3.kolejność.tabela3.osobEEG..in..imiona. == "EEG"],tab4$tabela3.kolejność.tabela3.osobEEG..in..imiona.[tab4$tabela3.kolejność.tabela3.osobEEG..in..imiona. == "EEG"],tab$ogolne.all.11[tab4$tabela3.osobEEG.tabela3.osobEEG..in..imiona.])
+tabf$ogolne.all.11[tab4$tabela3.osobEEG.tabela3.osobEEG..in..imiona.[tab4$tabela3.pre.post.test.tabela3.osobEEG..in..osoby. != "pre-test-manual" |tab4$tabela3.pre.post.test.tabela3.osobEEG..in..osoby. != "post-test-manual" ]] -> dok
+wilcox.test(dok[tab4$tabela3.kolejność.tabela3.osobEEG..in..imiona. == "EEG"],dok[tab4$tabela3.kolejność.tabela3.osobEEG..in..imiona. == "fMRI"])
+dok[tab4$tabela3.kolejność.tabela3.osobEEG..in..imiona. == "EEG"] -> eeg3
+dok[tab4$tabela3.kolejność.tabela3.osobEEG..in..imiona. == "fMRI"] -> fmri3
+fmri3
+eeg3
+eeg3
+eeg3[4] = median(median(eeg3[0:3]),median(eeg3[6:19]))
+wilcox.test(eeg3,fmri3)
+n1=length(eeg3)
+n2=length(fmri3)
+r=rank(c(eeg3,fmri3))
+U=sum(r[1:n1])-n1*(n1+1)/2
+U
+if (U<n1*n2/2) {p=pwilcox(U,n1,n2)*2} else {p=(1-pwilcox(U,n1,n2))*2}
+p
+boxplot(eeg3,fmri3, names = c("pierwsze EGG", "pierwsze fMRI"), main = "czas potrzebny do udzielenia odpowiedzi w próbach kontrolnych w fMRI")
+read.csv("KolejnośćfMRI.csv", sep = ";") -> kolfMRI
+substring(kolEEG$Osoby.Badane,11) -> osobyfMRI
+yf[0:42] -> kkr
+kkr
+kolfMRI[,c( "pre.post.test", "kolejność")] -> tabela3fMRI
+tabela3fMRI$osobfMRI <- osobyfMRI
+tabela3fMRI$osobfMRI
+imionafMRI <- c()
+#for(i in 1: length(osobyfMRI)){
+#        for(j in 1: length(kkr)){
+#                if (osobyfMRI[i] == kkr[j]){
+#                        imionafMRI[length(imionafMRI)+1] <- osobyfMRI[i]
+#
+#       }
+#}
+
+#for ( i in 1: length(tabela3fMRI)){
+ #       if(tabela3fMRI$osobfMRI[i] %in% imionafMRI){
+ #               next
+ #       }else{
+ #               tabelanewf <-tabela3fMRI[-c(i)]
+ #               tabelanewf -> tabela3fMRI
+ #       }
+#}
+#}
+#tabela3fMRI$osobfMRI
+#tabela3fMRI$pre.post.test[tabela3fMRI$osobfMRI %in% imionafMRI]
+#data.frame(tabela3fMRI$osobfMRI[tabela3fMRI$osobfMRI %in% kkr],tabela3fMRI$pre.post.test[tabela3fMRI$osobfMRI %in% kkr],tabela3fMRI$kolejność[tabela3fMRI$osobfMRI %in% imionafMRI]) -> tab4fMRI
+#tabela3fMRI
+#tab4fMRI
+
+#tabf$ogolne.all.1[tab4fMRI$tabela3.osobfMRI.tabela3.osobfMRI..in..imionafMRI.[tab4fMRI$tabela3.pre.post.test.tabela3.osobfMRI..in..osobyf. != "pre-test-manual" |tab4$tabela3.pre.post.test.tabela3.osobEEG..in..osoby. != "post-test-manual" ]] -> dokf
+# EEG-5
+
+# Poprawność w uwagowych
+table(tab$ogolne.all.1)/nrow(tab)
+dane <- tab$ogolne.all.1
+tab$ogolne.all.2 -> e
+data.frame(x) -> xs
+data.frame(dane, ys) -> qwe
+qwe$dane[qwe$ys=="SAT"] -> sat
+qwe$dane[qwe$ys=="noSAT"] -> nosat
+
+n1=length(sat)
+n2=length(nosat)
+r=rank(c(sat,nosat))
+U=sum(r[1:n1])-n1*(n1+1)/2
+U
+
+if (U<n1*n2/2) {p=pwilcox(U,n1,n2)*2} else {p=(1-pwilcox(U,n1,n2))*2}
+p
+boxplot(sat,nosat,names = c("SAT","noSAT"))
+dn <- tab$ogolne.all.2
+data.frame(x) -> xs2
+data.frame(dn, ys) -> qwe2
+qwe2$dn[qwe2$ys=="SAT"] -> sat3
+qwe2$dn[qwe2$ys=="noSAT"] -> nosat3
+wilcox.test(sat3,nosat3)
+
+# czas
+n1=length(sat2)
+n2=length(nosat2)
+r=rank(c(sat2,nosat2))
+U=sum(r[1:n1])-n1*(n1+1)/2
+U
+
+if (U<n1*n2/2) {p=pwilcox(U,n1,n2)*2} else {p=(1-pwilcox(U,n1,n2))*2}
+p
+boxplot(sat2,nosat2,names = c("SAT","noSAT"))
+
+d2 <- tab$ogolne.all.11
+data.frame(d2, ys) -> qwe
+qwe$d2[qwe$ys=="SAT"] -> sat2
+qwe$d2[qwe$ys=="noSAT"] -> nosat2
+wilcox.test(sat2,nosat2)
+
+
+
+# EEG-1
+d3 <- tab$ogolne.all.1
+d4 <- tab$ogolne.all.2
+data.frame(d3,ys) -> eksp
+data.frame(d4,ys) -> kont
+wilcox.test(d3,d4)
+plot(sat2,
+     ylab="",
+     type="l",
+     col="blue")
+lines(nosat2, col="red")
+
+boxplot(d3,d4, names = c("%uwagowe","%ruchowe"))
+
+n1=length(d3)
+n2=length(d4)
+r=rank(c(d3,d4))
+U=sum(r[1:n1])-n1*(n1+1)/2
+U
+
+if (U<n1*n2/2) {p=pwilcox(U,n1,n2)*2} else {p=(1-pwilcox(U,n1,n2))*2}
+p
+
+#czas
+n1=length(z1)
+n2=length(z2)
+r=rank(c(z1,z2))
+U=sum(r[1:n1])-n1*(n1+1)/2
+U
+
+if (U<n1*n2/2) {p=pwilcox(U,n1,n2)*2} else {p=(1-pwilcox(U,n1,n2))*2}
+p
+z1 <- tab$ogolne.all.9
+z2 <- tab$ogolne.all.11
+wilcox.test(z1,z2)
+boxplot(z1,z2, names  = c("uwagowe","kontrolne"))
+#EEG-2
+
+d5 <- tab$ogolne.all.35
+d6 <- tab$ogolne.all.36
+d7 <- tab$ogolne.all.37
+d8 <- tab$ogolne.all.38
+
+e2 <- tab$ogolne.all.13
+e3 <- tab$ogolne.all.14
+e4 <- tab$ogolne.all.15
+e5 <- tab$ogolne.all.16
+
+e6<- data.frame(e7,naz6)
+
+e7 <- c(e2,e3,e4,e5)
+
+naz2 <- rep('2',length(e2))
+naz3 <- rep('3',length(e3))
+naz4 <- rep('4',length(e4))
+naz5 <- rep('5',length(e5))
+naz6 <- c(naz2,naz3,naz4,naz5)
+
+kruskal.test(e6$e7,e6$naz6)
+boxplot(e6$e7~e6$naz6, xlab = "długość wskazówki", ylab = "czas potrzebny do udzielenia odpowiedzi")
+kruskal.test(d7,d8)
+
+kruskal.test(d5,d6,d7,d8)
+
+zad2 <- data.frame(c(d5,d6,d7,d8),nazw6)
+zad2
+kruskal.test(zad2$c.d5..d6..d7..d8.,zad2$nazw6)
+boxplot(zad2$c.d5..d6..d7..d8.~zad2$nazw6, xlab = "długość wskazówki", ylab = "procent poprawnie udzielonych odpowiedzi")
+nazw2 <- rep('2',length(d5))
+nazw3 <- rep('3',length(d6))
+nazw4 <- rep('4',length(d7))
+nazw5 <- rep('5',length(d8))
+nazw6 <- c(nazw2,nazw3,nazw4,nazw5)
+nazw6
+
+
+
+n1=length(d5)
+n2=length(d6)
+r=rank(c(d5,d6))
+U=sum(r[1:n1])-n1*(n1+1)/2
+U
+
+if (U<n1*n2/2) {p=pwilcox(U,n1,n2)*2} else {p=(1-pwilcox(U,n1,n2))*2}
+p
+
+boxplot(d5,d6,d7,d8, xlab = "Poziom odpowiedzi dla poszczególnych czasów reakcji" ,names = c('2','3','4','5'))
+
+
+wilcox.test(d5,d6)
+wilcox.test(d5,d7)
+wilcox.test(d5,d8)
+wilcox.test(d6,d7)
+wilcox.test(d6,d8)
+wilcox.test(d7,d8)
+
+# EEG 6
+dane <- tab$ogolne.all.1
+data.frame(x) -> xs
+data.frame(dane, ys) -> qwe
+qwe$dane[qwe$ys=="SAT"] -> sat
+qwe$dane[qwe$ys=="noSAT"] -> nosat
+wilcox.test(sat,nosat)
+sat
+nosat
+length(dane)
+length(sat)
+length(nosat)
+sat3
+boxplot(sat,sat3, names = c('sat','sat3'))
+boxplot(nosat, nosat3,names = c('nosat','nosat3'))
+nosat3
+dn <- tab$ogolne.all.2
+data.frame(x) -> xs2
+data.frame(dn, ys) -> qwe2
+qwe2$dn[qwe2$ys=="SAT"] -> sat3
+qwe2$dn[qwe2$ys=="noSAT"] -> nosat3
+wilcox.test(sat3,nosat3)
+wilcox.test(nosat3,sat)
+saty <- rep("SAT",length(sat))
+nosaty <- rep("noSAT", length(nosat))
+inst <- c(saty, nosaty)
+liczb <- c(sat, nosat)
+sze <- data.frame(inst, liczb)
+uw <- rep("uwagowe",length(dane))
+kon <- rep("kontrolne", length(dn))
+fsaty <- rep("SAT",length(sat3))
+fnosaty <- rep("noSAT", length(nosat3))
+finst <- c(fsaty, fnosaty)
+fliczb <- c(sat3, nosat3)
+poziom_odp <- c(liczb, fliczb)
+instrukcja <- c(inst,finst)
+zadanie <- c(uw,kon)
+sze <- data.frame(poziom_odp,instrukcja,zadanie)
+summary(model)
+model<-lm(sze$poziom_odp ~ sze$instrukcja+sze$zadanie+sze$instrukcja:sze$zadanie)
+summary(model)
+plot(model)
+abline(model)
+lines(sze$l1, sze$f1)
+abline(sze, lty = 2)
+#fMRI a EEG
+dn <- tab$ogolne.all.2
+data.frame(x) -> xs2
+data.frame(dn, ys) -> qwe2
+qwe2$dn[qwe2$ys=="SAT"] -> sat3
+qwe2$dn[qwe2$ys=="noSAT"] -> nosat3
+wilcox.test(sat3,nosat3)
+
+n1=length(sat3)
+n2=length(sat3f)
+r=rank(c(sat3, sat3f))
+U=sum(r[1:n1])-n1*(n1+1)/2
+U
+boxplot(sat3,sat3f, names = c("EEG","fMRI"))
+if (U<n1*n2/2) {p=pwilcox(U,n1,n2)*2} else {p=(1-pwilcox(U,n1,n2))*2}
+p
 # fMRI-5
 
 # Poprawność w uwagowych
-ysf
+
 danef <- tabf$ogolne.all.1
 data.frame(xf) -> xsf
 data.frame(danef, ysf) -> qwef
 qwef$danef[qwef$ysf=="SAT"] -> satf
 qwef$danef[qwef$ysf=="noSAT"] -> nosatf
-t.test(satf,nosatf)
+n1=length(satf)
+n2=length(nosatf)
+r=rank(c(satf, nosatf))
+U=sum(r[1:n1])-n1*(n1+1)/2
+U
 
+if (U<n1*n2/2) {p=pwilcox(U,n1,n2)*2} else {p=(1-pwilcox(U,n1,n2))*2}
+p
+boxplot(satf, nosatf,names= c('sat_uwagowe','nosat_uwagowe'))
+boxplot(sat3f, nosat3f)
+boxplot(satf, sat3f,nosatf,nosat3f, names = c('uwaga_sat','ruchowe_sat','uwaga_nosat','ruchowe_nosat'))
+boxplot(nosatf,nosat3f)
 
-t.test(sat,satf)
-
-t.test(nosat,nosatf)
+var.test(sat3f,nosat3f)        
 
 dnf <- tabf$ogolne.all.2
 data.frame(xf) -> xs2
 data.frame(dnf, ysf) -> qwe2f
 qwe2f$dnf[qwe2f$ysf=="SAT"] -> sat3f
 qwe2f$dnf[qwe2f$ysf=="noSAT"] -> nosat3f
-t.test(sat3f,nosat3f)
+r1=length(sat3f)
+r2=length(nosat3f)
+m=rank(c(sat3f, nosat3f))
+u3=sum(r[1:r1])-r1*(r1+1)/2
+u3
 
+if (u3<r1*r2/2) {k=pwilcox(U,r1,r2)*2} else {k=(1-pwilcox(u3,r1,r2))*2}
+k
+boxplot(sat2f,nosat2f, names = c("sat","nosat"))
+
+r5<-rank(c(satf,sat3f))
+K = sum(r5[1:n1])-n1*(n1+1)/2
+if(K<n1*r1/2){d=pwilcox(K,n1,r1)*2} else {d=(1-pwilcox(K, n1, r1))*2}
+d
+r3<-rank(c(nosatf,nosat3f))
+K1 = sum(r3[1:n2])-n2*(n2+1)/2
+if(K1<n2*r2/2){d1<-pwilcox(K1,n2,r2)*2} else {d1<-(1-pwilcox(K1, n2, r2))*2}
+d1
 # czas
 
-d2f <- tabf$ogolne.all.9
+d2f <- tabf$ogolne.all.11
 data.frame(d2f, ysf) -> qwef
 qwef$d2f[qwef$ysf=="SAT"] -> sat2f
-qwe$d2f[qwef$ysf=="noSAT"] -> nosat2f
-t.test(sat2f,nosat2f)
+qwef$d2f[qwef$ysf=="noSAT"] -> nosat2f
+wilcox.test(sat2f,nosat2f)
+sat2f
+nosat2f
+nosat2f
+boxplot(nosat2f)
 
-t.test(sat2, sat2f)
-t.test(nosat2,nosat2f)
-
+wilcox.test(sat2, sat2f)
+wilcox.test(nosat2,nosat2f)
 # fMRI-1
 d3f <- tabf$ogolne.all.1
 d4f <- tabf$ogolne.all.2
 data.frame(d3f,ysf) -> ekspf
 data.frame(d4f,ysf) -> kontf
-t.test(d3f,d4f)
+wilcox.test(d3f,d4f)
 plot(sat2f,
      ylab="",
      type="l",
      col="blue")
 lines(nosat2f, col="red")
 
+n1=length(d3f)
+n2=length(d4f)
+r=rank(c(d3f,d4f))
+U=sum(r[1:n1])-n1*(n1+1)/2
+U
 
+if (U<n1*n2/2) {p=pwilcox(U,n1,n2)*2} else {p=(1-pwilcox(U,n1,n2))*2}
+p
+
+#czas
+z3f <- tabf$ogolne.all.9
+z4f <- tabf$ogolne.all.11
+wilcox.test(z3f,z4f, paired = T)
+n1=length(z3f)
+n2=length(z4f)
+r=rank(c(z3f,z4f))
+U=sum(r[1:n1])-n1*(n1+1)/2
+U
+
+if (U<n1*n2/2) {p=pwilcox(U,n1,n2)*2} else {p=(1-pwilcox(U,n1,n2))*2}
+p
+boxplot(z3f,z4f, names = c("uwagowe","ruchowe"))
 #fMRI-2
+boxplot(d3,d4)
+boxplot(d3f,d4f,names = c("%popr.uwagowe","%popr.ruchowe"))
 
 d5f <- tabf$ogolne.all.35
 d6f <- tabf$ogolne.all.36
 d7f <- tabf$ogolne.all.37
 d8f <- tabf$ogolne.all.38
 
+zad2f <- data.frame(c(d5f,d6f,d7f,d8f),nazw6f)
+zad2f
+kruskal.test(zad2f$c.d5f..d6f..d7f..d8f.,zad2f$nazw6f)
+boxplot(zad2f$c.d5f..d6f..d7f..d8f.~zad2f$nazw6f, main = "fMRI", xlab = "długość wskazówki", ylab = "procent poprawnie udzielonych odpowiedzi")
+nazw2f <- rep('2',length(d5f))
+nazw3f <- rep('3',length(d6f))
+nazw4f <- rep('4',length(d7f))
+nazw5f <- rep('5',length(d8f))
+nazw6f <- c(nazw2f,nazw3f,nazw4f,nazw5f)
+nazw6f
+e2f <- tabf$ogolne.all.13
+e3f <- tabf$ogolne.all.14
+e4f <- tabf$ogolne.all.15
+e5f <- tabf$ogolne.all.16
 
-boxplot(d5f,d8f)
+e6f<- data.frame(e7f,naz6f)
 
+e7f <- c(e2f,e3f,e4f,e5f)
 
-t.test(d5f,d6f)
-t.test(d5f,d7f)
-t.test(d5f,d8f)
-t.test(d6f,d7f)
-t.test(d6f,d8f)
-t.test(d7f,d8f)
+naz2f <- rep('2',length(e2f))
+naz3f <- rep('3',length(e3f))
+naz4f <- rep('4',length(e4f))
+naz5f <- rep('5',length(e5f))
+naz6f <- c(naz2f,naz3f,naz4f,naz5f)
 
+kruskal.test(e6f$e7f,e6f$naz6f)
+boxplot(e6f$e7f~e6f$naz6f, main = "fMRI", xlab = "długość wskazówki", ylab = "czas potrzebny do udzielenia odpowiedzi")
 
+wilcox.test(d5f,d6f)
+wilcox.test(d5f,d7f)
+wilcox.test(d5f,d8f)
+wilcox.test(d6f,d7f)
+wilcox.test(d6f,d8f)
+wilcox.test(d7f,d8f)
+
+ggline(tab, x = c("tabf$ogolne.all.35", "tabf$ogolne.all.36","tabf$ogolne.all.37","tabf$ogolne.all.38"), y = "tab$ogolne.all.1", 
+       add = c("tabf$ogolne.all.35", "tabf$ogolne.all.36","tabf$ogolne.all.37","tabf$ogolne.all.38"), 
+       ylab = "Weight", xlab = "Treatment")
+
+boxplot(tab$nazwa[0], d5f,d6f,d7f,d8f)
+data <- data.frame(cbind(d5f,d6f,d7f,d8f))
+ds <- stack(data)
+aov(d5f,d6f,d7f,d8f)
+ds
+summary(aov(values ~ ind, data=ds))
 # fMRI 6
+
 danef <- tabf$ogolne.all.1
 data.frame(xf) -> xsf
 data.frame(danef, ysf) -> qwef
 qwef$dane[qwef$ys=="SAT"] -> satf
 qwef$dane[qwef$ys=="noSAT"] -> nosatf
-t.test(satf,nosatf)
+wilcox.test(satf,nosatf)
 boxplot(nosatf, nosat3f,names = c('nosat','nosat3'))
 boxplot(satf,sat3f, names = c('sat','sat3'))
 dnf <- tabf$ogolne.all.2
@@ -182,4 +518,20 @@ data.frame(dnf, ysf) -> qwe2f
 qwe2f$dnf[qwe2f$ysf=="SAT"] -> sat3f
 qwe2f$dnf[qwe2f$ysf=="noSAT"] -> nosat3f
 
-#-------------
+saty <- rep("SAT",length(satf))
+nosaty <- rep("noSAT", length(nosatf))
+inst <- c(saty, nosaty)
+liczb <- c(satf, nosatf)
+sze <- data.frame(inst, liczb)
+uw <- rep("uwagowe",length(danef))
+kon <- rep("kontrolne", length(dnf))
+fsaty <- rep("SAT",length(sat3f))
+fnosaty <- rep("noSAT", length(nosat3f))
+finst <- c(fsaty, fnosaty)
+fliczb <- c(sat3f, nosat3f)
+poziom_odp <- c(liczb, fliczb)
+instrukcja <- c(inst,finst)
+zadanie <- c(uw,kon)
+sze <- data.frame(poziom_odp,instrukcja,zadanie)
+summary(model)
+model<-lm(sze$poziom_odp ~ sze$instrukcja+sze$zadanie+sze$instrukcja:sze$zadanie)
