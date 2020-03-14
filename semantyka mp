@@ -1,0 +1,40 @@
+from pprint import pprint, pformat 
+from base64 import b64decode,b64encode
+import simplejson as json
+from xmlrpc.client import ServerProxy
+from csv import DictReader
+from statistics import mean, median, stdev
+from collections import defaultdict
+from jinja2 import Template, Environment
+from IPython.display import Markdown
+
+env = Environment(variable_start_string = 'XX', # zastępujemy {{
+                 variable_end_string = 'XX', # zastępujemy }}
+                 block_start_string = 'XV', # zastępujemy {%
+                 block_end_string = 'VX') # zastępujemy %}
+
+
+kognilab = ServerProxy('http://kognilab.pl/ls3/index.php/admin/remotecontrol') 
+login = 'Adam Kasiński'
+password = 'pRmu8R2WA7IO'
+skey = kognilab.get_session_key(login, password)
+
+
+with open('hexaco100pl.csv') as f:
+    hexaco = list(DictReader(f, delimiter = ';'))
+
+
+with open('limesurvey_survey_829722.lss') as f:
+    survey = f.read()
+with open('aa.lsq') as f:
+    quest1 = f.read()
+    
+sid = kognilab.import_survey(skey,b64encode(survey.encode()).decode(),'lss')
+group = kognilab.list_groups(skey,sid)
+gid = group[1]["gid"]
+template = env.from_string(quest1)
+for question in hexaco:
+    question_text = template.render(kod = question['item'],
+                                   pytanie = question['statement'])
+    question_64 = b64encode(question_text.encode()).decode()
+    kognilab.import_question(skey,sid,gid,question_64,'lsq',"Yes")
