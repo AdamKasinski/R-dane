@@ -1,0 +1,50 @@
+  
+# Poprawność w uwagowych
+#ogolne.all.1 -> %popr_uwagowe
+#SAT vs noSAT uwagowe
+danef <- tabf$ogolne.all.1
+data.frame(xf) -> xsf
+data.frame(danef, ysf) -> qwef
+qwef$danef[qwef$ysf=="SAT"] -> satf
+qwef$danef[qwef$ysf=="noSAT"] -> nosatf
+
+n1=length(satf)
+n2=length(nosatf)
+r=rank(c(satf, nosatf))
+U=sum(r[1:n1])-n1*(n1+1)/2
+U
+
+if (U<n1*n2/2) {p=pwilcox(U,n1,n2)*2} else {p=(1-pwilcox(U,n1,n2))*2}
+p
+
+#p = 0.02404935
+#ze względu na powtarzające się wartości użyłem metody, która pomaga poradzić sobie z tym problemem
+
+#SAT vs noSAT - ruchowe
+dnf <- tabf$ogolne.all.2 -> %popr_ruchowe
+data.frame(xf) -> xs2
+data.frame(dnf, ysf) -> qwe2f
+qwe2f$dnf[qwe2f$ysf=="SAT"] -> sat3f
+qwe2f$dnf[qwe2f$ysf=="noSAT"] -> nosat3f
+r1=length(sat3f)
+r2=length(nosat3f)
+m=rank(c(sat3f, nosat3f))
+u3=sum(r[1:r1])-r1*(r1+1)/2
+u3
+
+if (u3<r1*r2/2) {k=pwilcox(U,r1,r2)*2} else {k=(1-pwilcox(u3,r1,r2))*2}
+k
+#k=0.02404935 - wychodzi to samo co w przypadku uwagowych
+
+#porównanie SAT w ruchowych i SAT w uwagowych
+r5<-rank(c(satf,sat3f))
+K = sum(r5[1:n1])-n1*(n1+1)/2
+if(K<n1*r1/2){d=pwilcox(K,n1,r1)*2} else {d=(1-pwilcox(K, n1, r1))*2}
+d
+#d = 0.000000001385953
+#prównanie noSAT w ruchowych i noSAT w uwagowych
+r3<-rank(c(nosatf,nosat3f))
+K1 = sum(r3[1:n2])-n2*(n2+1)/2
+if(K1<n2*r2/2){d1<-pwilcox(K1,n2,r2)*2} else {d1<-(1-pwilcox(K1, n2, r2))*2}
+d1
+#d1 = 0.000000000360422
